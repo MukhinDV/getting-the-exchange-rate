@@ -5,8 +5,7 @@ namespace app\controllers\api;
 
 use app\components\Response;
 use app\models\Currency;
-use app\models\forms\AllCurrencyForm;
-use app\models\forms\CurrencyForm;
+use app\models\forms\{AllCurrencyForm, CurrencyForm};
 use Yii;
 
 class CurrencyController extends BaseApiController
