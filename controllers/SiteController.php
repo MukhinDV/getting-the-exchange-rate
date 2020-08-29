@@ -22,7 +22,12 @@ class SiteController extends Controller
                 'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['login', 'register'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'actions' => ['logout', 'index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -60,7 +65,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $token = User::findOne(Yii::$app->user->id);
+        return $this->render('index', [
+            'token' => $token->token
+        ]);
     }
 
     /**
@@ -93,8 +101,10 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
+    /** Registration
+     *
      * @return string|Response
+     *
      * @throws \yii\base\Exception
      */
     public function actionRegister()
