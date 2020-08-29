@@ -2,13 +2,12 @@
 
 namespace app\controllers;
 
+use app\helpers\UserHelper;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
-use yii\web\Response;
+use yii\web\{Controller, Response};
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends Controller
 {
@@ -75,13 +74,49 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        $model = new User();
+        $model->scenario = User::SCENARIO_LOGIN;
+
+        if (\Yii::$app->request->isPost) {
+            if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+                $userHelper = new UserHelper();
+                if ($userHelper->authUser($model->password, $model->login)) {
+                    $this->redirect(['/']);
+                } else {
+                    $model->addError('password', 'Неправильная пара логин/пароль.');
+                }
+            }
         }
 
-        $model->password = '';
         return $this->render('login', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @return string|Response
+     * @throws \yii\base\Exception
+     */
+    public function actionRegister()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $userHelper = new UserHelper();
+        $model = new User();
+
+        $model->scenario = User::SCENARIO_REGISTER;
+
+        if (\Yii::$app->request->isPost) {
+            if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+                $userHelper->createUser($model);
+
+                $this->redirect(['/']);
+            }
+        }
+
+        return $this->render('register', [
             'model' => $model,
         ]);
     }
@@ -96,33 +131,5 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 }
