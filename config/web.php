@@ -23,6 +23,28 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'response' => [
+            'class' => 'yii\web\Response',
+            'on beforeSend' => function ($event) {
+                $response = $event->sender;
+                if ($response->data !== null) {
+                    $data = $response->data;
+                    if (($response->statusCode == 400) && ($data['error'] === null)) {
+                        $response->data = [
+                            'status' => $response->isSuccessful,
+                            'code' => $response->statusCode,
+                            'error' => $data['message'],
+                        ];
+                    } elseif (($response->statusCode == 401) && ($data['error'] === null)) {
+                        $response->data = [
+                            'status' => 'error',
+                            'code' => $response->statusCode,
+                            'error' => $data['name'],
+                        ];
+                    }
+                }
+            },
+        ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
@@ -52,6 +74,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'api/<controller>/<action>/<id:>' => '<controller>/<action>'
             ],
         ],
     ],
