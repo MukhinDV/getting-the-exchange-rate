@@ -15,7 +15,7 @@ class CurrencyController extends BaseApiController
      *
      * @return array
      */
-    public function actionGetAllCurrency()
+    public function actionGetAllCurrency(): array
     {
         if (Yii::$app->getRequest()->isGet) {
             if (!empty(Currency::find()->all())) {
@@ -31,11 +31,11 @@ class CurrencyController extends BaseApiController
     /**
      * Find currency by id
      *
-     * @param $id
+     * @param string $id
      *
      * @return array
      */
-    public function actionGetCurrency($id)
+    public function actionGetCurrency(string $id): array
     {
         if (Yii::$app->getRequest()->isGet) {
             $model = new CurrencyForm($id);

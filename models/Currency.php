@@ -31,8 +31,10 @@ class Currency extends \yii\db\ActiveRecord
         return [
             [['id', 'name', 'rate', 'created_at'], 'required'],
             [['id'], 'string'],
+
             [['created_at', 'updated_at'], 'default', 'value' => null],
             [['created_at', 'updated_at'], 'integer'],
+
             [['name', 'rate'], 'string', 'max' => 255],
             [['id'], 'unique'],
         ];

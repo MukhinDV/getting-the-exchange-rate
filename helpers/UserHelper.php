@@ -11,6 +11,7 @@ class UserHelper
     /** This method will create new user
      *
      * @param $model User
+     *
      * @throws \yii\base\Exception
      * @throws \Exception
      */
@@ -23,7 +24,8 @@ class UserHelper
         $this->setUserRoles($model);
     }
 
-    /** This method will set user role
+    /**
+     * This method will set user role
      *
      * @param $model User
      * @throws \Exception
@@ -36,25 +38,26 @@ class UserHelper
     }
 
     /**
-     * @param $login
+     * @param string $login
      *
-     * @return User|null
+     * @return object
      */
-    private function findModel($login)
+    private function findModel(string $login): object
     {
         $model = User::findOne(['login' => $login]);
 
         return $model;
     }
 
-    /** This method makes user authorization
+    /**
+     * This method makes user authorization
      *
-     * @param $password
-     * @param $login
+     * @param string $password
+     * @param string $login
      *
      * @return bool
      */
-    public function authUser($password, $login)
+    public function authUser(string $password, string $login): bool
     {
         /** @var User $model */
         $model = $this->findModel($login);
@@ -70,26 +73,28 @@ class UserHelper
         return true;
     }
 
-    /** Verifies a password against a hash.
+    /**
+     * Verifies a password against a hash.
      *
-     * @param $password
-     * @param $passwordHash
+     * @param string $password
+     * @param string $passwordHash
      *
      * @return bool
      */
-    private function checkPassword($password, $passwordHash)
+    private function checkPassword(string $password, string $passwordHash): bool
     {
         return \Yii::$app->security->validatePassword($password, $passwordHash);
     }
 
-    /** This method generates a secure hash from a password and a random salt
+    /**
+     * This method generates a secure hash from a password and a random salt
      *
-     * @param $password
+     * @param string $password
      * @return string
      *
      * @throws \yii\base\Exception
      */
-    public function generatePasswordHash($password)
+    public function generatePasswordHash(string $password): string
     {
         return \Yii::$app->security->generatePasswordHash($password);
     }

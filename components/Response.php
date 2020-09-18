@@ -10,11 +10,11 @@ use yii\base\Behavior;
 class Response extends Behavior
 {
     /**
-     * @param $message
+     * @param string $message
      *
      * @return array
      */
-    public static function responseError($message)
+    public static function responseError(string $message): array
     {
         Yii::$app->response->statusCode = 400;
 
@@ -31,7 +31,7 @@ class Response extends Behavior
      *
      * @return array
      */
-    public static function succeededWithData($data, array $static = null)
+    public static function succeededWithData($data, array $static = null): array
     {
         Yii::$app->response->statusCode = 200;
 
@@ -60,7 +60,7 @@ class Response extends Behavior
      *
      * @return array
      */
-    public static function validateErrors(array $errors)
+    public static function validateErrors(array $errors): array
     {
         Yii::$app->response->statusCode = 403;
         $fail = ['status' => 'fail', 'code' => 403, 'fail' => []];
@@ -74,10 +74,11 @@ class Response extends Behavior
     }
 
     /**
-     * @param $request
+     * @param array $request
+     *
      * @return array
      */
-    public static function methodNotAllowed($request)
+    public static function methodNotAllowed(array $request): array
     {
         Yii::$app->response->statusCode = 405;
 
